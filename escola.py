@@ -3,7 +3,7 @@ import string
 
 #from click import INT
 from sqlalchemy import select, update, delete, insert, func, asc, desc
-from sqlalchemy import create_engine, Column, Integer, String, Table, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, Table, ForeignKey, Date
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
 #Criando o BD
@@ -15,7 +15,7 @@ Base = declarative_base()
 aluno_materia = Table(
     'aluno_materia', Base.metadata,
     Column('ra', Integer, ForeignKey('alunos.ra'), primary_key=True),
-    Column('id', Integer, ForeignKey('materia.id'), primary_key=True)
+    Column('id', Integer, ForeignKey('materias.id'), primary_key=True)
 )
 
 class Aluno(Base):
