@@ -1,8 +1,9 @@
 from sqlalchemy import Float, create_engine, Column, Integer, String, ForeignKey, Table
 from sqlalchemy import select, func, desc
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
+from Base import Base
 
-class Materia():
+class Materia(Base):
     __tablename__ = 'Materia'
     id = Column(Integer, primary_key=True)
     nome = Column(String)

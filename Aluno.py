@@ -1,12 +1,13 @@
 from datetime import date, datetime
 import string
+from Base import Base
 
 from click import INT
 from sqlalchemy import Float, create_engine, Column, Integer, String, ForeignKey, Table
 from sqlalchemy import select, func, desc
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
-class Aluno():
+class Aluno(Base):
     __tablename__ = 'Aluno'
     ra = Column(Integer, primary_key=True)
     data_nasc = Column(Float)
