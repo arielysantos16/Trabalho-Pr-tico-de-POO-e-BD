@@ -11,10 +11,21 @@ engine = create_engine('sqlite:///escola.db')
 
 Base = declarative_base()
 
+class Sala(Base):
+    __tablename__ = 'Salas'
+    num_turma = Column(Integer, primary_key=True)
+    num_cadeiras = Column(Integer)
+    Turmas = relationship('Turma', back_populates='Salas')
+
+    def __repr__(self):
+        return f"Número da sala({self.num_turma}, Número de cadeiraas({self.num_cadeiras}))"
+
 class Turma(Base):
     __tablename__ = 'turmas'
     cod = Column(Integer, primary_key=True)
     nome = Column(String, unique=True)
+    id_escola = Column(Integer, ForeignKey('Salas.num_turma'))
+    Salas = relationship('Sala', back_populates='Turmas')
     
     alunos = relationship('Aluno', back_populates='turma_obj')
 
@@ -61,8 +72,8 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 #inserindo dados
-turma_2a = Turma(id=1, nome='Info 2A')
-turma_2b = Turma(id=2, nome='Info 2B')
+turma_2a = Turma(cod=1, nome='Info 2A')
+turma_2b = Turma(cod=2, nome='Info 2B')
 
 web = Materia(id=1, nome='Programação de Sites Web', total_de_aulas=150)
 poo = Materia(id=2, nome='Programação Orientada a Objetos', total_de_aulas=200)
