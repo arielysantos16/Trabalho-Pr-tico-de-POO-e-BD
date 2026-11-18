@@ -11,6 +11,16 @@ engine = create_engine('sqlite:///escola.db')
 
 Base = declarative_base()
 
+class Turma(Base):
+    __tablename__ = 'turmas'
+    cod = Column(Integer, primary_key=True)
+    nome = Column(String, unique=True)
+    
+    alunos = relationship('Aluno', back_populates='turma_obj')
+
+    def __repr__(self):
+        return f"Turma({self.cod}, {self.nome!r})"
+
 #Criando as tabelas
 aluno_materia = Table(
     'aluno_materia', Base.metadata,
@@ -24,6 +34,9 @@ class Aluno(Base):
     data_nasc = Column(Date)
     nome = Column(String)
     turma = Column(String)
+    
+    turma_cod = Column(Integer, ForeignKey('turmas.cod'))
+    turma_obj = relationship('Turma', back_populates='alunos')
     
     materias = relationship('Materia', secondary=aluno_materia, back_populates='alunos')
 
@@ -48,17 +61,22 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 #inserindo dados
+turma_2a = Turma(id=1, nome='Info 2A')
+turma_2b = Turma(id=2, nome='Info 2B')
+
 web = Materia(id=1, nome='Programação de Sites Web', total_de_aulas=150)
 poo = Materia(id=2, nome='Programação Orientada a Objetos', total_de_aulas=200)
 bd = Materia(id=3, nome='Banco de Dados', total_de_aulas=120)
 hardware = Materia(id=4, nome='Fundamentos de Hardware', total_de_aulas=120)
 
 alunos = [
-    Aluno(ra=1001, nome='Ana Bia', data_nasc=date(2009, 11, 13), turma='Info 2A', materias=[web]),
-    Aluno(ra=1002, nome='João Miranda', data_nasc=date(2010, 4, 22), turma='Info 2A', materias=[web, poo, bd, hardware]),
-    Aluno(ra=1003, nome='Matheus Alves', data_nasc=date(2010, 2, 10), turma='Info 2A', materias=[web, poo]),
-    Aluno(ra=1004, nome='Valdete Almeida', data_nasc=date(2009, 9, 18), turma='Info 2B', materias=[web, poo, bd]),
+    Aluno(ra=1001, nome='Ana Bia', data_nasc=date(2009, 11, 13), turma_obj=turma_2a, materias=[web]),
+    Aluno(ra=1002, nome='João Miranda', data_nasc=date(2010, 4, 22), turma_obj=turma_2a, materias=[web, poo, bd, hardware]),
+    Aluno(ra=1003, nome='Matheus Alves', data_nasc=date(2010, 2, 10), turma_obj=turma_2a, materias=[web, poo]),
+    Aluno(ra=1004, nome='Valdete Almeida', data_nasc=date(2009, 9, 18), turma_obj=turma_2b, materias=[web, poo, bd]),
 ]
+
+session.add_all([turma_2a, turma_2b])
 session.add_all(alunos)
 session.commit()
 
